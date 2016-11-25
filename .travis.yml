@@ -1,0 +1,28 @@
+language: python
+
+cache: pip
+
+sudo: required
+
+dist: trusty
+
+python:
+    - "2.7"
+    - "3.3"
+    - "3.4"
+    - "3.5"
+    - "3.5-dev"
+    - "nightly"
+
+install:
+    - git clone https://github.com/stedolan/jq.git
+    - pushd jq
+    - autoreconf -i
+    - ./configure --disable-maintainer-mode
+    - make
+    - sudo make install
+    - popd
+
+script:
+    - python via4cve.py
+    - cat VIA4CVE-feed.json | jq .
