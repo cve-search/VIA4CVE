@@ -99,3 +99,11 @@ class RedHatInfo(Source):
           if self.name not in self.cves[cve]:
             self.cves[cve][self.name] = {}
           self.cves[cve].update(data)
+
+  def updateRefs(self, cveID, cveData):
+    # if redhat id present, remove from refs
+    rhsaID = cveData.get('redhat', {}).get('rhsa', {}).get('id')
+    if rhsaID:
+      if rhsaID in cveData.get('refmap', {}).get('redhat', []):
+        cveData['refmap']['redhat'].remove(rhsaID)
+    return cveData

@@ -27,11 +27,3 @@ class ReferenceIDs(Source):
           for cve in e[1]:
             if vendor not in self.cves[cve]:           self.cves[cve][vendor] = []
             if vendorID not in self.cves[cve][vendor]: self.cves[cve][vendor].append(vendorID)
-
-  def updateRefs(self, cveID, cveData):
-    # if redhat id present, remove from refs
-    rhsaID = cveData.get('redhat', {}).get('rhsa', {}).get('id')
-    if rhsaID:
-      if rhsaID in cveData.get('refmap', {}).get('redhat', []):
-        cveData['refmap']['redhat'].remove(rhsaID)
-    return cveData
