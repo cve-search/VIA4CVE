@@ -24,4 +24,3 @@ install:
 
 script:
     - python via4cve.py
-    - cat VIA4CVE-feed.json | jq .
