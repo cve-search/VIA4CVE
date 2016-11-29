@@ -5,8 +5,7 @@
 #
 # Software is free software released under the "Modified BSD license"
 #
-# Copyright (c) 2013-2014 	Alexandre Dulaunoy - a@foo.be
-# Copyright (c) 2014-2016 	Pieter-Jan Moreels - pieterjan.moreels@gmail.com
+# Copyright (c) 2016 	Pieter-Jan Moreels - pieterjan.moreels@gmail.com
 
 # imports
 import sys
@@ -27,18 +26,10 @@ class Configuration():
   ConfigParser = configparser.ConfigParser()
   ConfigParser.read(os.path.join(runPath, "../etc/sources.ini"))
   defaults={'http_proxy': '',
+            'exitWhenNoSource': True,
             'd2sec':      "http://www.d2sec.com/exploits/elliot.xml",
             'vendor':     "https://nvd.nist.gov/download/vendorstatements.xml.gz",
-            'msbulletin': "http://download.microsoft.com/download/6/7/3/673E4349-1CA5-40B9-8879-095C72D5B49D/BulletinSearch.xlsx",
-            'exploitdb':  "https://github.com/offensive-security/exploit-database/raw/master/files.csv",
-            'ref':        "https://cve.mitre.org/data/refs/refmap/allrefmaps.zip",
-            'rpm':        "https://www.redhat.com/security/data/metrics/rpm-to-cve.xml",
-            'rhsa':       "https://www.redhat.com/security/data/oval/com.redhat.rhsa-all.xml.bz2",
-
-            'includemsbulletin': True, 'included2sec':  True, 'includeref': True,
-            'includeexploitdb':  True, 'includevendor': True, 'includerpm': True,
-            'includerhsa':       True}
-
+            'msbulletin': "http://download.microsoft.com/download/6/7/3/673E4349-1CA5-40B9-8879-095C72D5B49D/BulletinSearch.xlsx"}
   @classmethod
   def readSetting(cls, section, item, default):
     result = default
@@ -51,22 +42,17 @@ class Configuration():
     return result
 
   @classmethod
-  def getFeedData(cls, source, unpack=True):
-    source = cls.getFeedURL(source)
+  def getFeedData(cls, source, default, unpack=True):
+    source = cls.readSetting("Sources", source, default)
     return cls.getFile(source, unpack) if source else None
 
   @classmethod
-  def getFeedURL(cls, source):
-    return cls.readSetting("Sources", source, cls.defaults.get(source, ""))
-
-  @classmethod
-  def includesFeed(cls, feed):
-   return cls.readSetting("Enabled Sources", feed, cls.defaults.get('include'+feed, False))
-
-  # Http Proxy
-  @classmethod
   def getProxy(cls):
     return cls.readSetting("Proxy", "http", cls.defaults['http_proxy'])
+
+  @classmethod
+  def exitWhenNoSource(cls):
+    return cls.readSetting("Settings", "exitWhenNoSource", True)
 
   @classmethod
   def getFile(cls, getfile, unpack=True):
@@ -75,7 +61,13 @@ class Configuration():
       auth = req.HTTPBasicAuthHandler()
       opener = req.build_opener(proxy, auth, req.HTTPHandler)
       req.install_opener(opener)
-    response = req.urlopen(getfile)
+    try:
+      response = req.urlopen(getfile)
+    except:
+      msg = "[!] Could not fetch file %s"%getfile
+      if cls.exitWhenNoSource(): sys.exit(msg)
+      else:                      print(msg)
+      data = None
     data = response
     # TODO: if data == text/plain; charset=utf-8, read and decode
     if unpack:

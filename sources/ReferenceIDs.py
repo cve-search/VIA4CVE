@@ -1,16 +1,30 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
+# Source file for saint exploit information
+#
+# Software is free software released under the "Modified BSD license"
+#
+# Copyright (c) 2016    Pieter-Jan Moreels - pieterjan.moreels@gmail.com
+
+# Sources
+SOURCE_NAME = 'refmap'
+SOURCE_FILE = "https://cve.mitre.org/data/refs/refmap/allrefmaps.zip"
+
+# Imports
 import zipfile
 
 from collections import defaultdict
 from io          import BytesIO
-from lxml.html       import fromstring
+from lxml.html   import fromstring
 
 from lib.Config import Configuration as conf
 from lib.Source import Source
 
 class ReferenceIDs(Source):
   def __init__(self):
-    self.name = "refmap"
-    _file, r = conf.getFeedData('ref', unpack=False)
+    self.name = SOURCE_NAME
+    _file, r = conf.getFeedData(SOURCE_NAME, SOURCE_FILE, unpack=False)
     zipobj   = zipfile.ZipFile(BytesIO(_file.read()))
     self.cves = defaultdict(dict)
 

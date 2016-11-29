@@ -1,3 +1,19 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
+# Source file for the RedHat information
+#  - RPM
+#  - RHSA
+#
+# Software is free software released under the "Modified BSD license"
+#
+# Copyright (c) 2016    Pieter-Jan Moreels - pieterjan.moreels@gmail.com
+
+# Sources
+SOURCES = {'rhsa': "https://www.redhat.com/security/data/oval/com.redhat.rhsa-all.xml.bz2",
+           'rpm':  "https://www.redhat.com/security/data/metrics/rpm-to-cve.xml"}
+
+# Imports
 import os
 import sys
 
@@ -91,14 +107,14 @@ class RedHatInfo(Source):
     self.cves = defaultdict(dict)
 
     for handler in handlers:
-      _file, r = conf.getFeedData(handler['source'])
-      if _file:
-        parser.setContentHandler(handler['handler'])
-        parser.parse(_file)
-        for cve, data in handler['handler'].CVEs.items():
-          if self.name not in self.cves[cve]:
-            self.cves[cve][self.name] = {}
-          self.cves[cve].update(data)
+      _file, r = conf.getFeedData(handler['source'],
+                                  SOURCES[handler['source']])
+      parser.setContentHandler(handler['handler'])
+      parser.parse(_file)
+      for cve, data in handler['handler'].CVEs.items():
+        if self.name not in self.cves[cve]:
+          self.cves[cve][self.name] = {}
+        self.cves[cve].update(data)
 
   def updateRefs(self, cveID, cveData):
     # if redhat id present, remove from refs
