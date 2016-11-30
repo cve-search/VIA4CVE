@@ -1,10 +1,10 @@
 import importlib
 import os
 import sys
+import traceback
 
 runPath = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.join(runPath, ".."))
-
 
 class PluginManager():
   def __init__(self):
@@ -25,6 +25,7 @@ class PluginManager():
       except Exception as e:
         print("[!] Failed to load module %s: "%x)
         print("[!]  -> %s"%e)
+        traceback.print_exc()
 
   def getAllCVEIDs(self):
     cves = []
@@ -46,14 +47,23 @@ class PluginManager():
       except Exception as e:
         print("[!] Failed to get CVE refs for %s: "%x)
         print("[!]  -> %s"%e)
+        traceback.print_exc()
     return cve
 
   def updateRefs(self, cveID, cveData):
-    cve = {}
     for x in self.plugins:
       try:
-        cve = x.updateRefs(cveID, cveData)
+        x.updateRefs(cveID, cveData)
       except Exception as e:
-        print("[!] Failed to get CVE refs for %s: "%x)
+        print("[!] Failed to update CVE refs for %s: "%x)
         print("[!]  -> %s"%e)
-    return cve
+        traceback.print_exc()
+
+  def cleanUp(self, cveID, cveData):
+    for x in self.plugins:
+      try:
+        x.cleanUp(cveID, cveData)
+      except Exception as e:
+        print("[!] Failed to clean CVE refs for %s: "%x)
+        print("[!]  -> %s"%e)
+        traceback.print_exc()

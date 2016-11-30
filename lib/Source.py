@@ -11,4 +11,7 @@ class Source():
     return self.cves.get(cve, {})
 
   def updateRefs(self, cveID, cveData):
-    return self.cves
+    pass
+
+  def cleanUp(self, cveID, cveData):
+    pass

@@ -88,7 +88,9 @@ class RHSAHandler(ContentHandler):
     if   name == 'definition':
       if 'cve' in self.rhsa:
         cve = self.rhsa.pop("cve")
-        self.CVEs[cve] = self.rhsa
+        if not self.CVEs[cve].get('advisories'):
+          self.CVEs[cve]['advisories'] = []
+        self.CVEs[cve]['advisories'].append(self.rhsa)
       self.rhsa = None
     elif name == 'criteria':
       if   len(self.ovalstack) == 0: return
@@ -112,14 +114,17 @@ class RedHatInfo(Source):
       parser.setContentHandler(handler['handler'])
       parser.parse(_file)
       for cve, data in handler['handler'].CVEs.items():
-        if self.name not in self.cves[cve]:
-          self.cves[cve][self.name] = {}
         self.cves[cve].update(data)
 
   def updateRefs(self, cveID, cveData):
-    # if redhat id present, remove from refs
-    rhsaID = cveData.get('redhat', {}).get('rhsa', {}).get('id')
-    if rhsaID:
-      if rhsaID in cveData.get('refmap', {}).get('redhat', []):
-        cveData['refmap']['redhat'].remove(rhsaID)
-    return cveData
+    # See if RHSA IDs are available in refs, and add them to the redhat map
+    rhsaIDs = [x.get('rhsa', {}).get('id') for x in cveData.get('redhat', {}).get('advisories', [])]
+    for rhsaID in cveData.get('refmap', {}).get('redhat', []):
+      if rhsaID not in rhsaIDs:
+        if not cveData.get('redhat'): cveData['redhat'] = {'advisories': []}
+        if not cveData['redhat'].get('advisories'): cveData['redhat']['advisories'] = []
+        cveData['redhat']['advisories'].append({'rhsa': {'id': rhsaID} })
+
+  def cleanUp(self, cveID, cveData):
+    if cveData.get('refmap', {}).get('redhat'):
+      del cveData['refmap']['redhat']

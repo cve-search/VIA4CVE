@@ -70,14 +70,5 @@ class Saint(Source):
     for osvdb in _osvdbs: cveData['saint'].extend(self.osvdbs[osvdb])
     # make unique
     cveData['saint'] = [dict(t) for t in set([tuple(d.items()) for d in cveData['saint']])]
-    # Remove refmap items
-    if cveData.get('refmap'):
-      for exploit in cveData['saint']:
-        if exploit.get('bid')   in cveData['refmap'].get('bid',   []):
-          cveData['refmap']['bid'].remove(exploit.get('bid'))
-          if len(cveData['refmap']['bid']) == 0: del cveData['refmap']['bid']
-        if exploit.get('osvdb') in cveData['refmap'].get('osvdb', []):
-          cveData['refmap']['osvdb'].remove(exploit.get('osvdb'))
-          if len(cveData['refmap']['osvdb']) == 0: del cveData['refmap']['osvdb']
+    # remove if empty
     if cveData['saint'] == []: cveData.pop('saint')
-    return cveData
