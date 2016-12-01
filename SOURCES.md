@@ -6,3 +6,4 @@
 | ReferenceIDs | refmap    | https://cve.mitre.org/data/refs/refmap/allrefmaps.zip                       |
 | Saint        | saint     | https://www.saintcorporation.com/xml/exploits.xml                           |
 | D2sec        | d2sec     | https://www.d2sec.com/exploits/elliot.xml                                   |
+| IAVM         | iavm      | http://iasecontent.disa.mil/stigs/xls/iavm-to-cve(u).xls                    |
