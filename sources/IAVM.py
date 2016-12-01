@@ -37,7 +37,7 @@ class IAVM(Source):
 
     for rownum in range(worksheet.nrows-1): # -1 because we skip the header
       row = worksheet.row_values(rownum+1)  # +1 because we skip the header
-      iavm[row[wf['iavm']]]['iavm']         = row[wf['id']]
+      iavm[row[wf['iavm']]]['id']           = row[wf['iavm']]
       iavm[row[wf['iavm']]]['vms']          = row[wf['vms']]
       iavm[row[wf['iavm']]]['severity']     = row[wf['severity']]
       iavm[row[wf['iavm']]]['release_date'] = row[wf['release_date']]
