@@ -30,14 +30,14 @@ class IAVM(Source):
   def __init__(self):
     self.name = SOURCE_NAME
     _file, r = conf.getFeedData(SOURCE_NAME, SOURCE_FILE)
-    workbook  = xlrd.open_workbook(file_contents = _file)
+    workbook  = xlrd.open_workbook(file_contents = _file.read())
     worksheet = workbook.sheet_by_index(0)
     iavm      = defaultdict(lambda : {'references': []})
     self.cves = defaultdict(list)
 
     for rownum in range(worksheet.nrows-1): # -1 because we skip the header
       row = worksheet.row_values(rownum+1)  # +1 because we skip the header
-      iavm[row[wf['iavm']]]['iavm']         = row[wf['iavm']]
+      iavm[row[wf['iavm']]]['iavm']         = row[wf['id']]
       iavm[row[wf['iavm']]]['vms']          = row[wf['vms']]
       iavm[row[wf['iavm']]]['severity']     = row[wf['severity']]
       iavm[row[wf['iavm']]]['release_date'] = row[wf['release_date']]

@@ -68,7 +68,7 @@ class Configuration():
       if cls.exitWhenNoSource(): sys.exit(msg)
       else:                      print(msg)
       data = None
-    data = response.read()
+    data = response
     # TODO: if data == text/plain; charset=utf-8, read and decode
     if unpack:
         if   'gzip' in response.info().get('Content-Type'):
