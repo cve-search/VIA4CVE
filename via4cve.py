@@ -3,12 +3,14 @@ if __name__ == '__main__':
   import json
   
   from lib.PluginManager import PluginManager
+  import test
   
   description='''Generator script for VIA4'''
   parser = argparse.ArgumentParser(description=description)
   parser.add_argument('file', metavar='file', nargs='?',   help='Output location ( Default: VIA4CVE-feed.json)')
   parser.add_argument('--no-update',  action='store_true', help="DEBUG: don't run the update part of the sources")
   parser.add_argument('--no-cleanup', action='store_true', help="DEBUG: don't run the cleanup part of the sources")
+  parser.add_argument('--verify',     action='store_true', help="Verify that the created file passes the unit test")
 
   args = parser.parse_args()
 
@@ -25,3 +27,7 @@ if __name__ == '__main__':
     for _id in cves.keys():     pm.cleanUp(_id, cves[_id])     # Clean data
   
   open(path, "w").write(json.dumps(cves))                      # Write data to path
+
+  if args.verify:
+    _cves = json.loads(open(path).read())                      # Reload cves
+    test.testAll(_cves, test.tests, False)                     # test the data (unit test)
