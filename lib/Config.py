@@ -71,11 +71,17 @@ class Configuration():
     data = response.read()
     # TODO: if data == text/plain; charset=utf-8, read and decode
     if unpack:
-        if   'gzip' in response.info().get('Content-Type'):
-          data = gzip.GzipFile(fileobj = BytesIO(data))
-        elif 'bzip2' in response.info().get('Content-Type'):
-          data = BytesIO(bz2.decompress(data))
-        elif 'zip' in response.info().get('Content-Type'):
+      if   'gzip' in response.info().get('Content-Type'):
+        data = gzip.GzipFile(fileobj = BytesIO(data))
+      elif 'bzip2' in response.info().get('Content-Type'):
+        data = BytesIO(bz2.decompress(data))
+      elif 'zip' in response.info().get('Content-Type'):
+        fzip = zipfile.ZipFile(BytesIO(data), 'r')
+        if len(fzip.namelist())>0:
+          data=BytesIO(fzip.read(fzip.namelist()[0]))
+      # In case the webserver is being generic
+      elif 'application/octet-stream' in response.info().get('Content-Type'):
+        if data[:4] == b'PK\x03\x04': # Zip
           fzip = zipfile.ZipFile(BytesIO(data), 'r')
           if len(fzip.namelist())>0:
             data=BytesIO(fzip.read(fzip.namelist()[0]))
