@@ -25,7 +25,7 @@ class ReferenceIDs(Source):
   def __init__(self):
     self.name = SOURCE_NAME
     _file, r = conf.getFeedData(SOURCE_NAME, SOURCE_FILE, unpack=False)
-    zipobj   = zipfile.ZipFile(BytesIO(_file.read()))
+    zipobj   = zipfile.ZipFile(BytesIO(_file))
     self.cves = defaultdict(dict)
 
     for filename in zipobj.namelist():

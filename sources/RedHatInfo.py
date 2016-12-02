@@ -21,6 +21,7 @@ runPath = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.join(runPath, ".."))
 
 from collections     import defaultdict
+from io              import BytesIO
 from xml.sax         import make_parser
 from xml.sax.handler import ContentHandler
 
@@ -112,6 +113,8 @@ class RedHatInfo(Source):
       _file, r = conf.getFeedData(handler['source'],
                                   SOURCES[handler['source']])
       parser.setContentHandler(handler['handler'])
+      if type(_file) is bytes:
+        _file = BytesIO(_file)
       parser.parse(_file)
       for cve, data in handler['handler'].CVEs.items():
         self.cves[cve].update(data)

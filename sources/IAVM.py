@@ -30,7 +30,7 @@ class IAVM(Source):
   def __init__(self):
     self.name = SOURCE_NAME
     _file, r = conf.getFeedData(SOURCE_NAME, SOURCE_FILE)
-    workbook  = xlrd.open_workbook(file_contents = _file.read())
+    workbook  = xlrd.open_workbook(file_contents = _file)
     worksheet = workbook.sheet_by_index(0)
     iavm      = defaultdict(lambda : {'references': []})
     self.cves = defaultdict(list)

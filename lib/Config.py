@@ -68,16 +68,15 @@ class Configuration():
       if cls.exitWhenNoSource(): sys.exit(msg)
       else:                      print(msg)
       data = None
-    data = response
+    data = response.read()
     # TODO: if data == text/plain; charset=utf-8, read and decode
     if unpack:
         if   'gzip' in response.info().get('Content-Type'):
-          buf = BytesIO(response.read())
-          data = gzip.GzipFile(fileobj=buf)
+          data = gzip.GzipFile(fileobj = BytesIO(data))
         elif 'bzip2' in response.info().get('Content-Type'):
-          data = BytesIO(bz2.decompress(response.read()))
+          data = BytesIO(bz2.decompress(data))
         elif 'zip' in response.info().get('Content-Type'):
-          fzip = zipfile.ZipFile(BytesIO(response.read()), 'r')
+          fzip = zipfile.ZipFile(BytesIO(data), 'r')
           if len(fzip.namelist())>0:
             data=BytesIO(fzip.read(fzip.namelist()[0]))
     return (data, response)

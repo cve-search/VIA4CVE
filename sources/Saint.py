@@ -13,6 +13,7 @@ SOURCE_FILE = "https://www.saintcorporation.com/xml/exploits.xml"
 
 # Imports
 from collections     import defaultdict
+from io              import BytesIO
 from xml.sax         import make_parser
 from xml.sax.handler import ContentHandler
 
@@ -50,7 +51,7 @@ class Saint(Source):
     handler = SaintHandler()
     _file, r = conf.getFeedData(SOURCE_NAME, SOURCE_FILE)
     parser.setContentHandler(handler)
-    parser.parse(_file)
+    parser.parse(BytesIO(_file))
     self.cves   = defaultdict(list)
     self.bids   = defaultdict(list)
     self.osvdbs = defaultdict(list)

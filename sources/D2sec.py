@@ -14,6 +14,7 @@ SOURCE_FILE = "https://www.d2sec.com/exploits/elliot.xml"
 # Imports
 import copy
 from collections     import defaultdict
+from io              import BytesIO
 from xml.sax         import make_parser
 from xml.sax.handler import ContentHandler
 
@@ -51,7 +52,7 @@ class D2sec(Source):
     handler = D2secHandler()
     _file, r = conf.getFeedData(SOURCE_NAME, SOURCE_FILE)
     parser.setContentHandler(handler)
-    parser.parse(_file)
+    parser.parse(BytesIO(_file))
     self.cves     = defaultdict(list)
     self.exploits = defaultdict(dict)
     for exploit in handler.exploits:
