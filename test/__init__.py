@@ -1,13 +1,13 @@
 import traceback
 
-tests = {'D2sec':      {'cve': 'CVE-2009-3534', 'key': "d2sec.%.name",                'val': "LionWiki 3.0.3 LFI"},
-         'ExploitDB':  {'cve': 'CVE-2009-4186', 'key': "exploit-db.%.id",             'val': "10102"},
-         'IAVM':       {'cve': 'CVE-2007-0214', 'key': "iavm.id",                     'val': "2007-A-0014"},
-         'MSBulletin': {'cve': 'CVE-2016-7241', 'key': "msbulletin.%.bulletin_id",    'val': "MS16-142"},
-         'OVAL':       {'cve': 'CVE-2007-5730', 'key': "oval.%.id",                   'val': "oval:org.mitre.oval:def:10000"},
-         'RedHatInfo': {'cve': 'CVE-2003-0858', 'key': "redhat.advisories.%.rhsa.id", 'val': "RHSA-2003:315"},
-         'Saint':      {'cve': 'CVE-2006-6183', 'key': "saint.%.id",                  'val': "ftp_3cservertftp"},
-         
+tests = {'D2sec':            {'cve': 'CVE-2009-3534', 'key': "d2sec.%.name",                'val': "LionWiki 3.0.3 LFI"},
+         'ExploitDB':        {'cve': 'CVE-2009-4186', 'key': "exploit-db.%.id",             'val': "10102"},
+         'IAVM':             {'cve': 'CVE-2007-0214', 'key': "iavm.id",                     'val': "2007-A-0014"},
+         'MSBulletin':       {'cve': 'CVE-2016-7241', 'key': "msbulletin.%.bulletin_id",    'val': "MS16-142"},
+         'OVAL':             {'cve': 'CVE-2007-5730', 'key': "oval.%.id",                   'val': "oval:org.mitre.oval:def:10000"},
+         'RedHatInfo':       {'cve': 'CVE-2003-0858', 'key': "redhat.advisories.%.rhsa.id", 'val': "RHSA-2003:315"},
+         'Saint':            {'cve': 'CVE-2006-6183', 'key': "saint.%.id",                  'val': "ftp_3cservertftp"},
+         'VendorStatements': {'cve': 'CVE-1999-0524', 'key': "statements.%.contributor",    'val': "Joshua Bressers"},
         }
 _verbose = False
 
