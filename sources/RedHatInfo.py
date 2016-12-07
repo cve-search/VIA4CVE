@@ -28,6 +28,18 @@ from xml.sax.handler import ContentHandler
 from lib.Config import Configuration as conf
 from lib.Source import Source
 
+def renameOvalStack(stack):
+  if type(stack) == dict:
+    operator = stack.get('operator')
+    criteria = stack.get('criteria')
+    if operator and criteria:
+      stack[operator] = criteria
+      del stack['operator']
+      del stack['criteria']
+      for item in stack[operator]:
+        renameOvalStack(item)
+  return stack
+
 ##############
 # Redhat RPM #
 ##############
@@ -96,7 +108,8 @@ class RHSAHandler(ContentHandler):
     elif name == 'criteria':
       if   len(self.ovalstack) == 0: return
       elif len(self.ovalstack) == 1:
-        self.rhsa['oval'] = self.ovalstack.pop()
+        stack = renameOvalStack(self.ovalstack.pop())
+        self.rhsa['oval'] = stack
       else:
         self.ovalstack.pop()
 
