@@ -34,7 +34,8 @@ class OVALHandler(ContentHandler):
     self.tag = name
     if   name == 'definition':
       self.oval_id = attrs.get('id')
-      self.ovals[self.oval_id] = {'class':        attrs.get('class'),
+      self.ovals[self.oval_id] = {'id':           self.oval_id,
+                                  'class':        attrs.get('class'),
                                   'version':      attrs.get('version'),
                                   'contributors': []}
     elif name == 'affected'          and self.oval_id:
