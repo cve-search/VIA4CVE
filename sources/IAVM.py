@@ -15,7 +15,6 @@ SOURCE_FILE = "http://iasecontent.disa.mil/stigs/xls/iavm-to-cve(u).xls"
 import xlrd
 
 from collections import defaultdict
-from io          import BytesIO
 
 from lib.Config  import Configuration as conf
 from lib.Source  import Source

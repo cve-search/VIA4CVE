@@ -100,7 +100,6 @@ class OVAL(Source):
     handler = OVALHandler()
     _file, r = conf.getFeedData(SOURCE_NAME, SOURCE_FILE)
     parser.setContentHandler(handler)
-    data = _file
     parser.parse(_file)
     self.cves = {}
     self.oval = handler.ovals

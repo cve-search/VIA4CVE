@@ -24,12 +24,8 @@ from io import BytesIO
 
 class Configuration():
   ConfigParser = configparser.ConfigParser()
-  ConfigParser.read(os.path.join(runPath, "../etc/sources.ini"))
-  defaults={'http_proxy': '',
-            'exitWhenNoSource': True,
-            'd2sec':      "http://www.d2sec.com/exploits/elliot.xml",
-            'vendor':     "https://nvd.nist.gov/download/vendorstatements.xml.gz",
-            'msbulletin': "http://download.microsoft.com/download/6/7/3/673E4349-1CA5-40B9-8879-095C72D5B49D/BulletinSearch.xlsx"}
+  ConfigParser.read(os.path.join(runPath, "../etc/configuration.ini"))
+  defaults={'http_proxy': '', 'exitWhenNoSource': True}
   @classmethod
   def readSetting(cls, section, item, default):
     result = default
