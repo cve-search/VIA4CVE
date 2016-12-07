@@ -58,3 +58,7 @@ class MSBulletin(Source):
       to_store.pop("cves")
       for cve in data['cves']:
         self.cves[cve].append(to_store)
+
+  def cleanUp(self, cveID, cveData):
+    if cveData.get('refmap', {}).get('ms'):
+      del cveData['refmap']['ms']
