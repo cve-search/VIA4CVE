@@ -53,11 +53,16 @@ class MSBulletin(Source):
       mskb[row[wf['bulletin_id']]]['title']            = row[wf['title']]
       mskb[row[wf['bulletin_id']]]['cves']             = row[wf['cves']].split(",")
 
+      bulletin_url      = worksheet.hyperlink_map.get((rownum, wf['bulletin_id']))
+      knowledgebase_url = worksheet.hyperlink_map.get((rownum, wf['knowledgebase_id']))
+      mskb[row[wf['bulletin_id']]]['bulletin_url']      = bulletin_url
+      mskb[row[wf['bulletin_id']]]['knowledgebase_url'] = knowledgebase_url
+
     for _id, data in mskb.items():
       to_store = copy.copy(data)
       to_store.pop("cves")
       for cve in data['cves']:
-        self.cves[cve].append(to_store)
+        if cve: self.cves[cve].append(to_store)
 
   def cleanUp(self, cveID, cveData):
     if cveData.get('refmap', {}).get('ms'):
