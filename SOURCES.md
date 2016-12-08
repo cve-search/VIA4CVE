@@ -10,3 +10,4 @@
 | ReferenceIDs     | refmap     | https://cve.mitre.org/data/refs/refmap/allrefmaps.zip                                                  |
 | Saint            | saint      | https://www.saintcorporation.com/xml/exploits.xml                                                      |
 | VendorStatements | statements | https://nvd.nist.gov/download/vendorstatements.xml.gz                                                  |
+| VMWare           | vmware     | https://www.vmware.com/files/xls/security/VMWareSecurityAdvisoryList.xlsx                              |
