@@ -8,6 +8,7 @@ tests = {'D2sec':            {'cve': 'CVE-2009-3534', 'key': "d2sec.%.name",    
          'RedHatInfo':       {'cve': 'CVE-2003-0858', 'key': "redhat.advisories.%.rhsa.id", 'val': "RHSA-2003:315"},
          'Saint':            {'cve': 'CVE-2006-6183', 'key': "saint.%.id",                  'val': "ftp_3cservertftp"},
          'VendorStatements': {'cve': 'CVE-1999-0524', 'key': "statements.%.contributor",    'val': "Joshua Bressers"},
+         'VMWare':           {'cve': 'CVE-2015-5177', 'key': "vmware.%.id",                 'val': "VMSA-2015-0007"},
         }
 _verbose = False
 

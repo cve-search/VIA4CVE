@@ -41,3 +41,9 @@ class ReferenceIDs(Source):
           for cve in e[1]:
             if vendor not in self.cves[cve]:           self.cves[cve][vendor] = []
             if vendorID not in self.cves[cve][vendor]: self.cves[cve][vendor].append(vendorID)
+
+  def getSearchables(self):
+    return ['aixapar', 'bea', 'bid', 'cert', 'cert-vn', 'debian', 'fedora',
+            'freebsd', 'gentoo', 'hp', 'jvn', 'jvndb', 'mandrake', 'mandriva',
+            'milw0rm', 'netbsd', 'openpkg', 'osvdb', 'sco', 'sectrack',
+            'secunia', 'sgi', 'slackware', 'suse', 'ubuntu', 'vupen', 'xf']

@@ -144,3 +144,6 @@ class RedHatInfo(Source):
   def cleanUp(self, cveID, cveData):
     if cveData.get('refmap', {}).get('redhat'):
       del cveData['refmap']['redhat']
+
+  def getSearchables(self):
+    return ['advisories.rhsa.id', 'advisories.bugzilla.id', 'rpms']

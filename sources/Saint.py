@@ -12,6 +12,8 @@ SOURCE_NAME = 'saint'
 SOURCE_FILE = "https://www.saintcorporation.com/xml/exploits.xml"
 
 # Imports
+import copy
+
 from collections     import defaultdict
 from io              import BytesIO
 from xml.sax         import make_parser
@@ -56,9 +58,11 @@ class Saint(Source):
     self.bids   = defaultdict(list)
     self.osvdbs = defaultdict(list)
     for exploit in handler.exploits:
-      if exploit.get('cve'):   self.cves[  exploit['cve']  ].append(exploit)
-      if exploit.get('bid'):   self.bids[  exploit['bid']  ].append(exploit)
-      if exploit.get('osvdb'): self.osvdbs[exploit['osvdb']].append(exploit)
+      data = copy.copy(exploit)
+      if data.get('cve'): data.pop('cve')
+      if exploit.get('cve'):   self.cves[  exploit['cve']  ].append(data)
+      if exploit.get('bid'):   self.bids[  exploit['bid']  ].append(data)
+      if exploit.get('osvdb'): self.osvdbs[exploit['osvdb']].append(data)
 
   def updateRefs(self, cveID, cveData):
     cveData['saint'] = []
@@ -73,3 +77,6 @@ class Saint(Source):
     cveData['saint'] = [dict(t) for t in set([tuple(d.items()) for d in cveData['saint']])]
     # remove if empty
     if cveData['saint'] == []: cveData.pop('saint')
+
+  def getSearchables(self):
+    return ['id', 'bid', 'osvdb', 'title']

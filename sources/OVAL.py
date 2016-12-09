@@ -114,3 +114,6 @@ class OVAL(Source):
   def cleanUp(self, cveID, cveData):
     if cveData.get('refmap', {}).get(SOURCE_NAME):
       del cveData['refmap'][SOURCE_NAME]
+
+  def getSearchables(self):
+    return ['id']

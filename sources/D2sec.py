@@ -71,3 +71,6 @@ class D2sec(Source):
       for _id in cveData['refmap'][key]:
         cveData[SOURCE_NAME].extend(self.exploits[key].get(_id, []))
     if cveData[SOURCE_NAME] == []: cveData.pop(SOURCE_NAME)
+
+  def getSearchables(self):
+    return ['name']

@@ -15,3 +15,6 @@ class Source():
 
   def cleanUp(self, cveID, cveData):
     pass
+
+  def getSearchables(self):
+    return []

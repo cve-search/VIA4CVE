@@ -52,3 +52,6 @@ class IAVM(Source):
       if data.get('cve'):
         cve = data.pop("cve")
         self.cves[cve] = data
+
+  def getSearchables(self):
+    return ['id', 'references.name', 'vms']

@@ -1,10 +1,10 @@
 if __name__ == '__main__':
   import argparse
   import json
-  
+
   from lib.PluginManager import PluginManager
   import test
-  
+
   description='''Generator script for VIA4'''
   parser = argparse.ArgumentParser(description=description)
   parser.add_argument('file', metavar='file', nargs='?',   help='Output location ( Default: VIA4CVE-feed.json)')
@@ -25,8 +25,12 @@ if __name__ == '__main__':
     for _id in cves.keys():     pm.updateRefs(_id, cves[_id])  # Update data based on previous data
   if not args.no_cleanup:
     for _id in cves.keys():     pm.cleanUp(_id, cves[_id])     # Clean data
-  
-  open(path, "w").write(json.dumps(cves))                      # Write data to path
+
+  data = {'cves': cves,
+          'metadata': {'searchables': pm.getSearchables(),
+                       'sources':     pm.getPluginNames()}}
+
+  open(path, "w").write(json.dumps(data))                      # Write data to path
 
   if args.verify:
     _cves = json.loads(open(path).read())                      # Reload cves

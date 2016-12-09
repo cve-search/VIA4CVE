@@ -52,3 +52,6 @@ class VendorStatements(Source):
     parser.setContentHandler(handler)
     parser.parse(_file)
     self.cves = handler.statements
+
+  def getSearchables(self):
+    return ['contributor', 'organization']

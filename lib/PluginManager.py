@@ -10,6 +10,7 @@ class PluginManager():
   def __init__(self):
     self.plugins = []
 
+
   def loadPlugins(self):
     path = os.path.join(runPath, "../sources/")
     plugins = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
@@ -17,7 +18,8 @@ class PluginManager():
     for x in plugins:
       try:
         # Load plugins
-        x = x.rstrip(".py")
+        if x[-3:].lower() == ".py":
+          x = x[:-3]
         lib = os.path.join("sources", x).replace("/", ".")
         i = importlib.import_module(lib)
         self.plugins.append(getattr(i, x.split("/")[-1])())
@@ -26,6 +28,11 @@ class PluginManager():
         print("[!] Failed to load module %s: "%x)
         print("[!]  -> %s"%e)
         traceback.print_exc()
+
+
+  def getPluginNames(self):
+    return [x.name for x in self.plugins]
+
 
   def getAllCVEIDs(self):
     cves = []
@@ -36,6 +43,7 @@ class PluginManager():
         print("[!] Failed to get CVEs for %s: "%x)
         print("[!]  -> %s"%e)
     return cves
+
 
   def getCVERefs(self, cveID):
     cve = {}
@@ -50,6 +58,7 @@ class PluginManager():
         traceback.print_exc()
     return cve
 
+
   def updateRefs(self, cveID, cveData):
     for x in self.plugins:
       try:
@@ -59,6 +68,7 @@ class PluginManager():
         print("[!]  -> %s"%e)
         traceback.print_exc()
 
+
   def cleanUp(self, cveID, cveData):
     for x in self.plugins:
       try:
@@ -67,3 +77,16 @@ class PluginManager():
         print("[!] Failed to clean CVE refs for %s: "%x)
         print("[!]  -> %s"%e)
         traceback.print_exc()
+
+
+  def getSearchables(self):
+    searchables = []
+    for x in self.plugins:
+      try:
+        for s in x.getSearchables():
+          searchables.append(x.name+'.'+s)
+      except Exception as e:
+        print("[!] Failed to get searchables for %s: "%x)
+        print("[!]  -> %s"%e)
+        traceback.print_exc()
+    return searchables

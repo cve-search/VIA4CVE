@@ -75,3 +75,6 @@ class VMWare(Source):
     for cve, data in vmware.items():
       for _id, _data in data.items():
         self.cves[cve].append(_data)
+
+  def getSearchables(self):
+    return ['id', 'finder.company', 'finder.name']

@@ -67,3 +67,6 @@ class MSBulletin(Source):
   def cleanUp(self, cveID, cveData):
     if cveData.get('refmap', {}).get('ms'):
       del cveData['refmap']['ms']
+
+  def getSearchables(self):
+    return ['bulletin_id', 'knowledgebase_id']
