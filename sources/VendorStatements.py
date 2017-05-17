@@ -30,13 +30,14 @@ class VendorStatementsHandler(ContentHandler):
     if name == "statement":
       self.statement = {'organization': attrs.get('organization'),
                         'lastmodified': attrs.get('lastmodified'),
-                        'contributor':  attrs.get('contributor')}
+                        'contributor':  attrs.get('contributor'),
+                        'statement':    ""}
       self.id = attrs.get('cvename')
       self.tag = name
 
   def characters(self, ch):
     if ch and self.statement and self.id:
-      self.statement['statement'] = ch
+      self.statement['statement'] += ch
 
   def endElement(self, name):
     if self.statement and name == "statement":
