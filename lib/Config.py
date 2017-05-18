@@ -22,6 +22,8 @@ import urllib.request as req
 import zipfile
 from io import BytesIO
 
+import requests
+
 class Configuration():
   ConfigParser = configparser.ConfigParser()
   ConfigParser.read(os.path.join(runPath, "../etc/configuration.ini"))
@@ -82,3 +84,19 @@ class Configuration():
           if len(fzip.namelist())>0:
             data=BytesIO(fzip.read(fzip.namelist()[0]))
     return (data, response)
+  
+  # Get Microsoft Bulletin
+  def get_msbulletin(url):
+    h1={"Accept": "application/json, text/plain, */*",
+    "Content-Type": "application/json;charset=utf-8",
+    "Referer": "https://portal.msrc.microsoft.com/en-us/security-guidance"
+    }
+    data1 ='{"familyIds":[],"productIds":[],"severityIds":[],"impactIds":[],"pageNumber":1,"pageSize":100,"includeCveNumber":true,"includeSeverity":true,"includeImpact":true,"orderBy":"publishedDate","orderByMonthly":"releaseDate","isDescending":true,"isDescendingMonthly":true,"queryText":"","isSearch":false,"filterText":"","fromPublishedDate":"04/12/2017","toPublishedDate":"05/17/2017"}'
+    post = requests.post(url,  headers=h1, data=data1)
+    data=b''
+    for chunk in post.iter_content(chunk_size=128):
+        data=data+chunk
+    if len(data)>0:
+      return data
+    else:
+      return None
