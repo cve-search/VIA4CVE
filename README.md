@@ -1,6 +1,6 @@
 # VIA4CVE - Vulnerability Information Aggregator for CVEs
 
-[![Build Status](https://travis-ci.org/cve-search/cve-search.svg?branch=master)](https://travis-ci.org/cve-search/cve-search)
+[![Build Status](https://travis-ci.org/cve-search/VIA4CVE.svg?branch=master)](https://travis-ci.org/cve-search/VIA4CVE)
 
 VIA4CVE is an aggregator of the known vendor vulnerabilities database to support the expansion
 of information with CVEs. VIA4CVE is a companion to [cve-search](https://github.com/cve-search/cve-search).
