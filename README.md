@@ -1,5 +1,7 @@
 # VIA4CVE - Vulnerability Information Aggregator for CVEs
 
+[![Join the chat at https://gitter.im/cve-search/VIA4CVE](https://badges.gitter.im/cve-search/VIA4CVE.svg)](https://gitter.im/cve-search/VIA4CVE?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Build Status](https://travis-ci.org/cve-search/VIA4CVE.svg?branch=master)](https://travis-ci.org/cve-search/VIA4CVE)
 
 VIA4CVE is an aggregator of the known vendor vulnerabilities database to support the expansion
