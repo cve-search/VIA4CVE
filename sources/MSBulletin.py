@@ -91,7 +91,7 @@ def get_msbulletin(url, from_date='01/01/1900', to_date=None):
         return {}
 
 
-class MSBulletin_V2(Source):
+class MSBulletin(Source):
 
     """
       Get msbulletins & Add all CVEs found in VIA4CVE.feed.json
