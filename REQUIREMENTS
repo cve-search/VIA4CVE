@@ -1,2 +1,7 @@
-xlrd
-lxml
+certifi==2017.4.17
+chardet==3.0.4
+idna==2.5
+lxml==3.8.0
+requests==2.18.1
+urllib3==1.21.1
+xlrd==1.0.0
