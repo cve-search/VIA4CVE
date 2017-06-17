@@ -1,2 +1,7 @@
 xlrd
 lxml
+certifi
+chardet
+idna
+requests
+urllib3
