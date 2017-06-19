@@ -13,6 +13,7 @@
 import gzip
 import json
 import requests
+import os
 
 from collections import defaultdict
 
@@ -20,7 +21,8 @@ from lib.Source import Source
 
 SOURCE_NAME = "msbulletin"
 SOURCE_FILE = "https://portal.msrc.microsoft.com/api/security-guidance/en-us/"
-GZIP_FILE   = "./data/old_Microsoft_bulletins.gz"
+CURRENT_PATH = os.path.dirname(os.path.realpath(__file__))
+GZIP_FILE   = os.path.join(CURRENT_PATH,"../data/old_Microsoft_bulletins.gz")
 
 def get_Old_Bulletins():
     try:
