@@ -1,6 +1,8 @@
 # VIA4CVE - Vulnerability Information Aggregator for CVEs
 
-[![Build Status](https://travis-ci.org/cve-search/cve-search.svg?branch=master)](https://travis-ci.org/cve-search/cve-search)
+[![Join the chat at https://gitter.im/cve-search/VIA4CVE](https://badges.gitter.im/cve-search/VIA4CVE.svg)](https://gitter.im/cve-search/VIA4CVE?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+[![Build Status](https://travis-ci.org/cve-search/VIA4CVE.svg?branch=master)](https://travis-ci.org/cve-search/VIA4CVE)
 
 VIA4CVE is an aggregator of the known vendor vulnerabilities database to support the expansion
 of information with CVEs. VIA4CVE is a companion to [cve-search](https://github.com/cve-search/cve-search).
@@ -11,7 +13,7 @@ VIA4CVE generates a compiled JSON file containing the CVE which all the known re
 
 * [D2sec](https://www.d2sec.com)
 * [ExploitDB](https://www.exploit-db.com/)
-* [Information Assurance Vulnerability Alert](http://www.arcyber.army.mil) - (IAVM)
+* [Information Assurance Vulnerability Alert](http://www.arcyber.army.mil) - (IAVM) - Removed
 * [Microsoft Bulletins](https://technet.microsoft.com/en-us/security/bulletins.aspx)
 * [Open Vulnerability and Assesment Language](https://oval.cisecurity.org/) - (OVAL)
 * RedHat information including packages associated to vulnerabilities

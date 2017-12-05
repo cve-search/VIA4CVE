@@ -14,6 +14,13 @@ python:
     - "nightly"
 
 install:
+    - git clone https://github.com/kkos/oniguruma
+    - pushd oniguruma
+    - autoreconf -vfi
+    - ./configure
+    - make
+    - sudo make install
+    - popd
     - git clone https://github.com/stedolan/jq.git
     - pushd jq
     - autoreconf -i
@@ -21,6 +28,7 @@ install:
     - make
     - sudo make install
     - popd
+    - pip install -r REQUIREMENTS
 
 script:
     - python via4cve.py
