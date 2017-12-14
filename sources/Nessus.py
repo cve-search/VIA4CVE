@@ -9,7 +9,7 @@
 # Copyright (c) 2017 	Pieter-Jan Moreels - pieterjan.moreels@gmail.com
 
 # Sources
-SOURCE_NAME = 'Nessus'
+SOURCE_NAME = 'nessus'
 SOURCE_FILE = "https://vulners.com/api/v3/archive/collection/?type=nessus"
 
 # Imports
