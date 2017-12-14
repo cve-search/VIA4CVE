@@ -13,6 +13,7 @@
 | RedHatInfo       | redhat          | https://www.redhat.com/security/data/metrics/rpm-to-cve.xml                                            |
 | ReferenceIDs     | refmap          | https://cve.mitre.org/data/refs/refmap/allrefmaps.zip                                                  |
 | Saint            | saint           | https://www.saintcorporation.com/xml/exploits.xml                                                      |
+| Talos            | talos           | https://vulners.com/api/v3/archive/collection/?type=talos                                              |
 | TheHackerNews    | the hacker news | https://vulners.com/api/v3/archive/collection/?type=thn                                                |
 | VendorStatements | statements      | https://nvd.nist.gov/download/vendorstatements.xml.gz                                                  |
 | VMWare           | vmware          | https://www.vmware.com/files/xls/security/VMWareSecurityAdvisoryList.xlsx                              |
