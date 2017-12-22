@@ -49,3 +49,6 @@ class VulnerLab(Source):
             for date in ['published', 'modified', 'last seen']: clean_date(lab, date)
             if lab:
                 for CVE in source['cvelist']: self.cves[CVE].append(lab)
+
+    def getSearchables(self):
+        return ['id', 'reporter']

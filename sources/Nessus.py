@@ -51,3 +51,6 @@ class Nessus(Source):
             for date in ['published', 'modified', 'last seen']: clean_date(nessus, date)
             if nessus:
                 for CVE in source['cvelist']: self.cves[CVE].append(nessus)
+
+    def getSearchables(self):
+        return ['NASL family', 'plugin id', 'NASL family', 'reporter']

@@ -48,3 +48,6 @@ class Talos(Source):
             for date in ['published', 'last seen']: clean_date(talos, date)
             if talos:
                 for CVE in source['cvelist']: self.cves[CVE].append(talos)
+
+    def getSearchables(self):
+        return ['id', 'reporter']

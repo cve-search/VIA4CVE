@@ -35,18 +35,21 @@ class PacketStorm(Source):
         _file, r = conf.getFeedData(SOURCE_NAME, SOURCE_FILE)
         data = json.loads(str(_file.read(), 'utf-8'))
         for entry in data:
-            msf = {}
+            ps = {}
             source = entry['_source']
-            add_if(msf, source, 'published')
-            add_if(msf, source, 'lastseen', 'last seen')
-            add_if(msf, source, 'id')
-            add_if(msf, source, 'title')
-            add_if(msf, source, 'description')
-            add_if(msf, source, 'references')
-            add_if(msf, source, 'reporter')
-            add_if(msf, source, 'href', 'source')
-            add_if(msf, source, 'sourceHref', 'data source')
+            add_if(ps, source, 'published')
+            add_if(ps, source, 'lastseen', 'last seen')
+            add_if(ps, source, 'id')
+            add_if(ps, source, 'title')
+            add_if(ps, source, 'description')
+            add_if(ps, source, 'references')
+            add_if(ps, source, 'reporter')
+            add_if(ps, source, 'href', 'source')
+            add_if(ps, source, 'sourceHref', 'data source')
 
-            for date in ['published', 'last seen']: clean_date(msf, date)
-            if msf:
-                for CVE in source['cvelist']: self.cves[CVE].append(msf)
+            for date in ['published', 'last seen']: clean_date(ps, date)
+            if ps:
+                for CVE in source['cvelist']: self.cves[CVE].append(ps)
+
+    def getSearchables(self):
+        return ['id', 'reporter']

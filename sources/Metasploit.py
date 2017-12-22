@@ -51,3 +51,6 @@ class Metasploit(Source):
             for date in ['published', 'modified', 'last seen']: clean_date(msf, date)
             if msf:
                 for CVE in source['cvelist']: self.cves[CVE].append(msf)
+
+    def getSearchables(self):
+        return ['id', 'reporter']

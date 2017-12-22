@@ -49,3 +49,6 @@ class TheHackerNews(Source):
             for date in ['published', 'modified', 'last seen']: clean_date(thn, date)
             if thn:
                 for CVE in source['cvelist']: self.cves[CVE].append(thn)
+
+    def getSearchables(self):
+        return ['id', 'reporter']
