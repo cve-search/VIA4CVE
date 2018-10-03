@@ -9,7 +9,7 @@
 
 # Sources
 SOURCE_NAME = 'saint'
-SOURCE_FILE = "https://www.saintcorporation.com/xml/exploits.xml"
+SOURCE_FILE = "https://my.saintcorporation.com/xml/exploits.xml"
 
 # Imports
 import copy
