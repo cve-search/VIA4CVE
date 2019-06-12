@@ -14,15 +14,22 @@ import gzip
 import json
 import requests
 import os
+from lib.Config  import Configuration as conf
 
 from collections import defaultdict
 
 from lib.Source import Source
 
 SOURCE_NAME = "msbulletin"
-SOURCE_FILE = "https://portal.msrc.microsoft.com/api/security-guidance/en-us/"
+MSRCAPIURL = "https://api.msrc.microsoft.com"
+SOURCE_FILE = MSRCAPIURL + "/Updates"
+API_VERSION = '2016-08-01'
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__))
 GZIP_FILE   = os.path.join(CURRENT_PATH,"../data/old_Microsoft_bulletins.gz")
+
+# update based on code here
+# https://github.com/microsoft/MSRC-Microsoft-Security-Updates-API
+#
 
 def get_Old_Bulletins():
     try:
@@ -32,12 +39,14 @@ def get_Old_Bulletins():
         print("Could not read old Bulletins")
         return {}
 
+def clean_date(_, item):
+    if _.get(item): _[item] = _[item].split('T')[0]
 
-def get_msbulletin(url, from_date='01/01/1900', to_date=None):
+def get_msbulletin(url):
     """
-    Query the undocumented MSRC public API to fetch all the bulletins
+    Query the documented MSRC public API to fetch all the bulletins
     and related data.
-    Select all the bulletins between `from_date` and `to_date`.
+    Select all the bulletins .
     Return a list of dictionaries with this structure:
     Data input
 
@@ -67,31 +76,68 @@ def get_msbulletin(url, from_date='01/01/1900', to_date=None):
       "monthlyDownloadUrl": null
     },
     """
+    api_key = conf.readSetting("msbulletin", "api_key", "")
     headers = {
         'Accept': "application/json, text/plain, */*",
         'Content-Type': 'application/json;charset=utf-8',
-        'Referer': 'https://portal.msrc.microsoft.com/en-us/security-guidance'
+        'api-key': api_key
     }
 
+
+    # query = {
+    #     'familyIds': [], 'productIds': [], 'severityIds': [], 'impactIds': [],
+    #     'pageNumber': 1, 'pageSize': 50000,
+    #     'includeCveNumber': True, 'includeSeverity': True, 'includeImpact': True,
+    #     'orderBy': 'publishedDate', 'orderByMonthly': 'releaseDate',
+    #     'isDescending': True, 'isDescendingMonthly': True,
+    #     'queryText': '', 'isSearch': False, 'filterText': '',
+    #     'fromPublishedDate': from_date
+    # }
     query = {
-        'familyIds': [], 'productIds': [], 'severityIds': [], 'impactIds': [],
-        'pageNumber': 1, 'pageSize': 50000,
-        'includeCveNumber': True, 'includeSeverity': True, 'includeImpact': True,
-        'orderBy': 'publishedDate', 'orderByMonthly': 'releaseDate',
-        'isDescending': True, 'isDescendingMonthly': True,
-        'queryText': '', 'isSearch': False, 'filterText': '',
-        'fromPublishedDate': from_date
+        'api-version' : API_VERSION
     }
 
-    if to_date:
-        query['toPublishedDate'] = to_date
 
-    post = requests.post(url, headers=headers, data=json.dumps(query))
-    if post:
-        return post.json()
-    else:
-        return {}
+    # if to_date:
+    #     query['toPublishedDate'] = to_date
 
+    get = requests.get(url, headers=headers, params=query)
+
+    blist = get.json().get("value",[])
+
+    products = []
+    product_by_id = {}
+    product_branches = {}
+    vulnerabilities = []
+    vendor_branches = {}
+
+    for blisti in blist:
+        if "CvrfUrl" in blisti:
+            cvrfdoc = requests.get(blisti["CvrfUrl"], headers=headers).json()
+            if "ProductTree" in cvrfdoc:
+                if "Branch" in cvrfdoc["ProductTree"]:
+                    for branchi in cvrfdoc["ProductTree"]["Branch"]:
+                        if "Items" in branchi:
+                            vendor_branches[branchi["Name"]] = {"Type":branchi["Type"]}
+                            for producti in branchi["Items"]:
+                                product_branches[producti["Name"]] = {"Type": producti["Type"]}
+                                for productdeti in producti.get("Items",[]):
+                                    if productdeti["ProductID"] not in product_by_id:
+                                        prodpos = len(products)
+                                        productdeti["ProductBranch"] = producti["Name"]
+                                        productdeti["VendorBranch"] = branchi["Name"]
+                                        products.append(productdeti)
+                                        product_by_id[productdeti["ProductID"]] = prodpos
+                if "FullProductName" in cvrfdoc["ProductTree"]:
+                    for prodi in cvrfdoc["ProductTree"]["FullProductName"]:
+                        if prodi["ProductID"] not in product_by_id:
+                            prodpos = len(products) + 1
+                            products.append(producti)
+                            product_by_id[prodi["ProductID"]] = prodpos
+            if "Vulnerability" in cvrfdoc:
+                for vuli in cvrfdoc["Vulnerability"]:
+                    vulnerabilities.append(vuli)
+    return vulnerabilities, products, product_by_id, product_branches
 
 class MSBulletin(Source):
 
@@ -118,35 +164,74 @@ class MSBulletin(Source):
 
     def __init__(self):
         self.name = SOURCE_NAME
-        data_json = get_msbulletin(SOURCE_FILE)  # Get MS Bulletins in Json Format
+        vulnerabilities, products, product_by_id, product_branches = get_msbulletin(SOURCE_FILE)  # Get MS Bulletins in Json Format
         mskb = defaultdict(dict)
         old  = get_Old_Bulletins()
         self.cves = defaultdict(list)
 
-        for entry in data_json['details']:
+        sevs = {"Unknown":-1,
+                "None":0,
+                "Low":1,
+                "Moderate":2,
+                "Important":3,
+                "Critical":4
+        }
 
-            cve_number = entry['cveNumber']
+        for entry in vulnerabilities:
 
-            mskb[cve_number]['publishedDate'] = entry['publishedDate']  # PublishedDate
-            mskb[cve_number]['knowledgebase_id'] = entry['knowledgeBaseId']  # KB id
-            mskb[cve_number]['severity'] = entry['severity']
-            mskb[cve_number]['impact'] = entry['impact']
-            mskb[cve_number]['name'] = entry['name']  # Product Name
-            mskb[cve_number]['cves'] = entry['cveNumber']  # CVE  id
-            mskb[cve_number]['cves_url'] = entry['cveUrl']  # CVE url
+            cve_number = entry['CVE']
 
-            mskb[cve_number]['bulletin_SOURCE_FILE'] = SOURCE_FILE
-            mskb[cve_number]['knowledgebase_SOURCE_FILE'] = entry['knowledgeBaseUrl']  # File source of KB
+            for product in entry['ProductStatuses']:
+                for productId in product["ProductID"]:
+                    mskb[cve_number]['published'] = entry['RevisionHistory'][0]["Date"]  # PublishedDate
+
+                    clean_date(mskb[cve_number],'published')
+
+                    mskb[cve_number]['knowledgebase_id'] = entry['CVE']  # KB id
+
+                    # taken from https://github.com/microsoft/MSRC-Microsoft-Security-Updates-API/blob/master/src/MsrcSecurityUpdates/Public/Get-MsrcCvrfCVESummary.ps1
+                    severity = "Unknown"
+                    for threati in entry["Threats"]:
+                        if threati["Type"] == 3:
+                            if sevs[threati["Description"]["Value"]] > sevs[severity]:
+                                severity = threati["Description"]["Value"]
+
+                    mskb[cve_number]['severity'] = severity
+
+                    # taken from https://github.com/microsoft/MSRC-Microsoft-Security-Updates-API/blob/master/src/MsrcSecurityUpdates/Public/Get-MsrcCvrfCVESummary.ps1
+                    impact = "Unknown"
+                    for threati in entry["Threats"]:
+                        if threati["Type"] == 0:
+                            impact = threati["Description"]["Value"]
+
+                    mskb[cve_number]['impact'] = impact
+                    mskb[cve_number]['title'] = entry["Title"].get("Value","")
+                    description = ""
+                    for notei in entry["Notes"]:
+                        description = description + notei["Title"]+":"+notei["Value"]
+                    mskb[cve_number]['description'] = description
+                    mskb[cve_number]['name'] = products[product_by_id[productId]].get("Value","")  # Product Name
+                    mskb[cve_number]['cves'] = entry['CVE']  # CVE  id
+                    mskb[cve_number]['cves_url'] = "https://portal.msrc.microsoft.com/en-US/security-guidance/advisory/{}".format(entry['CVE'] ) # CVE url
+
+                    mskb[cve_number]['bulletin_SOURCE_FILE'] = SOURCE_FILE
+                    # mskb[cve_number]['knowledgebase_SOURCE_FILE'] = entry['knowledgeBaseUrl']  # File source of KB
 
         for _id, data in mskb.items():
             data_cves = data.pop("cves")
-            bulletins = old.get(data_cves, [])
-            mskb_ids = [x['knowledgebase_id'] for x in bulletins]
-            if data['knowledgebase_id'] not in mskb_ids:
-                mskb_ids.append(data['knowledgebase_id'])
-                bulletins.append(data)
+
+            # bulletins = old.get(data_cves, [])
+            #mskb_ids = [x['knowledgebase_id'] for x in bulletins]
+            #if data['knowledgebase_id'] not in mskb_ids:
+            #    mskb_ids.append(data['knowledgebase_id'])
+            bulletins = data
             if data_cves:
-                self.cves[data_cves] = bulletins
+                self.cves[data_cves] = [bulletins]
+
+        for _id,data in old.items():
+            if _id not in self.cves:
+                self.cves[_id] = data
+
 
     def cleanUp(self, cveID, cveData):
         if cveData.get('refmap', {}).get('ms'):

@@ -31,7 +31,10 @@ workbook_format = wf = {'cve':             8,   'workaround':     14,
 
 def minimalist_xldate_as_datetime(xldate, datemode):
     # datemode: 0 for 1900-based, 1 for 1904-based
-    if type(xldate) == str: return datetime.datetime.strptime(xldate, "%d/%m/%Y").date()
+    if type(xldate) == str:
+      xldate = xldate.replace(".","/")
+      xldate = xldate.replace("-","/")
+      return datetime.datetime.strptime(xldate, "%d/%m/%Y").date()
     return (datetime.datetime(1899, 12, 30)
             + datetime.timedelta(days=xldate + 1462 * datemode))
 
