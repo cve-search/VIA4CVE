@@ -184,7 +184,7 @@ class MSBulletin(Source):
             for product in entry['ProductStatuses']:
                 for productId in product["ProductID"]:
                     mskb[cve_number]['published'] = entry['RevisionHistory'][0]["Date"]  # PublishedDate
-
+                    mskb[cve_number]['modified'] = entry['RevisionHistory'][len(entry['RevisionHistory'])-1]["Date"]
                     clean_date(mskb[cve_number],'published')
 
                     mskb[cve_number]['knowledgebase_id'] = entry['CVE']  # KB id
@@ -215,6 +215,9 @@ class MSBulletin(Source):
                     mskb[cve_number]['cves_url'] = "https://portal.msrc.microsoft.com/en-US/security-guidance/advisory/{}".format(entry['CVE'] ) # CVE url
                     mskb[cve_number][
                         'knowledgebase_url'] = "https://portal.msrc.microsoft.com/en-US/security-guidance/advisory/{}".format(
+                        entry['CVE'])
+                    mskb[cve_number][
+                        'bulletin_url'] = "https://portal.msrc.microsoft.com/en-US/security-guidance/advisory/{}".format(
                         entry['CVE'])
                     mskb[cve_number]['bulletin_SOURCE_FILE'] = SOURCE_FILE
                     # mskb[cve_number]['knowledgebase_SOURCE_FILE'] = entry['knowledgeBaseUrl']  # File source of KB
