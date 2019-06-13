@@ -180,47 +180,54 @@ class MSBulletin(Source):
         for entry in vulnerabilities:
 
             cve_number = entry['CVE']
+            productNames =[]
 
             for product in entry['ProductStatuses']:
                 for productId in product["ProductID"]:
-                    mskb[cve_number]['published'] = entry['RevisionHistory'][0]["Date"]  # PublishedDate
-                    mskb[cve_number]['modified'] = entry['RevisionHistory'][len(entry['RevisionHistory'])-1]["Date"]
-                    clean_date(mskb[cve_number],'published')
+                    productNames.append({"id":productId,"name": products[product_by_id[productId]].get("Value", "") }) # Product Name
+                    
+            mskb[cve_number]['published'] = entry['RevisionHistory'][0]["Date"]  # PublishedDate
+            mskb[cve_number]['modified'] = entry['RevisionHistory'][len(entry['RevisionHistory'])-1]["Date"]
+            mskb[cve_number]['revisions'] = entry['RevisionHistory']
+            clean_date(mskb[cve_number],'published')
 
-                    mskb[cve_number]['knowledgebase_id'] = entry['CVE']  # KB id
+            mskb[cve_number]['knowledgebase_id'] = entry['CVE']  # KB id
 
-                    # taken from https://github.com/microsoft/MSRC-Microsoft-Security-Updates-API/blob/master/src/MsrcSecurityUpdates/Public/Get-MsrcCvrfCVESummary.ps1
-                    severity = "Unknown"
-                    for threati in entry["Threats"]:
-                        if threati["Type"] == 3:
-                            if sevs[threati["Description"]["Value"]] > sevs[severity]:
-                                severity = threati["Description"]["Value"]
+            # taken from https://github.com/microsoft/MSRC-Microsoft-Security-Updates-API/blob/master/src/MsrcSecurityUpdates/Public/Get-MsrcCvrfCVESummary.ps1
+            severity = "Unknown"
+            threats = []
+            for threati in entry["Threats"]:
+                if threati["Type"] == 3:
+                    if sevs[threati["Description"]["Value"]] > sevs[severity]:
+                        severity = threati["Description"]["Value"]
+                threats.append(threati)
 
-                    mskb[cve_number]['severity'] = severity
+            mskb[cve_number]['threats'] = threats
+            mskb[cve_number]['severity'] = severity
 
-                    # taken from https://github.com/microsoft/MSRC-Microsoft-Security-Updates-API/blob/master/src/MsrcSecurityUpdates/Public/Get-MsrcCvrfCVESummary.ps1
-                    impact = "Unknown"
-                    for threati in entry["Threats"]:
-                        if threati["Type"] == 0:
-                            impact = threati["Description"]["Value"]
+            # taken from https://github.com/microsoft/MSRC-Microsoft-Security-Updates-API/blob/master/src/MsrcSecurityUpdates/Public/Get-MsrcCvrfCVESummary.ps1
+            impact = "Unknown"
+            for threati in entry["Threats"]:
+                if threati["Type"] == 0:
+                    impact = threati["Description"]["Value"]
 
-                    mskb[cve_number]['impact'] = impact
-                    mskb[cve_number]['title'] = entry["Title"].get("Value","")
-                    description = ""
-                    for notei in entry["Notes"]:
-                        description = description + notei["Title"]+":"+notei["Value"]
-                    mskb[cve_number]['description'] = description
-                    mskb[cve_number]['name'] = products[product_by_id[productId]].get("Value","")  # Product Name
-                    mskb[cve_number]['cves'] = entry['CVE']  # CVE  id
-                    mskb[cve_number]['cves_url'] = "https://portal.msrc.microsoft.com/en-US/security-guidance/advisory/{}".format(entry['CVE'] ) # CVE url
-                    mskb[cve_number][
-                        'knowledgebase_url'] = "https://portal.msrc.microsoft.com/en-US/security-guidance/advisory/{}".format(
-                        entry['CVE'])
-                    mskb[cve_number][
-                        'bulletin_url'] = "https://portal.msrc.microsoft.com/en-US/security-guidance/advisory/{}".format(
-                        entry['CVE'])
-                    mskb[cve_number]['bulletin_SOURCE_FILE'] = SOURCE_FILE
-                    # mskb[cve_number]['knowledgebase_SOURCE_FILE'] = entry['knowledgeBaseUrl']  # File source of KB
+            mskb[cve_number]['impact'] = impact
+            mskb[cve_number]['title'] = entry["Title"].get("Value","")
+            description = ""
+            for notei in entry["Notes"]:
+                description = description + notei["Title"]+":"+notei["Value"]
+            mskb[cve_number]['description'] = description
+            mskb[cve_number]['productImpacted'] = productNames
+            mskb[cve_number]['cves'] = entry['CVE']  # CVE  id
+            mskb[cve_number]['cves_url'] = "https://portal.msrc.microsoft.com/en-US/security-guidance/advisory/{}".format(entry['CVE'] ) # CVE url
+            mskb[cve_number][
+                'knowledgebase_url'] = "https://portal.msrc.microsoft.com/en-US/security-guidance/advisory/{}".format(
+                entry['CVE'])
+            mskb[cve_number][
+                'bulletin_url'] = "https://portal.msrc.microsoft.com/en-US/security-guidance/advisory/{}".format(
+                entry['CVE'])
+            mskb[cve_number]['bulletin_SOURCE_FILE'] = SOURCE_FILE
+            # mskb[cve_number]['knowledgebase_SOURCE_FILE'] = entry['knowledgeBaseUrl']  # File source of KB
 
         for _id, data in mskb.items():
             data_cves = data.pop("cves")
