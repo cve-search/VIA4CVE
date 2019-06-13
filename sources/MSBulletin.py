@@ -213,7 +213,9 @@ class MSBulletin(Source):
                     mskb[cve_number]['name'] = products[product_by_id[productId]].get("Value","")  # Product Name
                     mskb[cve_number]['cves'] = entry['CVE']  # CVE  id
                     mskb[cve_number]['cves_url'] = "https://portal.msrc.microsoft.com/en-US/security-guidance/advisory/{}".format(entry['CVE'] ) # CVE url
-
+                    mskb[cve_number][
+                        'knowledgebase_url'] = "https://portal.msrc.microsoft.com/en-US/security-guidance/advisory/{}".format(
+                        entry['CVE'])
                     mskb[cve_number]['bulletin_SOURCE_FILE'] = SOURCE_FILE
                     # mskb[cve_number]['knowledgebase_SOURCE_FILE'] = entry['knowledgeBaseUrl']  # File source of KB
 
