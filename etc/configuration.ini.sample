@@ -9,6 +9,14 @@ rhsa:       https://www.redhat.com/security/data/oval/com.redhat.rhsa-all.xml.bz
 rpm:        https://www.redhat.com/security/data/metrics/rpm-to-cve.xml
 saint:      https://www.saintcorporation.com/xml/exploits.xml
 
+[vulners]
+# api key from vulners
+api_key=XXXXXXXXXXXXXXXXXX
+
+[msbulletin]
+# api key for ms bullletins api
+api_key=XXXXXXXXXX
+
 [Settings]
 exitWhenNoSource: True
 

@@ -10,7 +10,7 @@
 
 # Sources
 SOURCE_NAME = 'vulner lab'
-SOURCE_FILE = "https://vulners.com/api/v3/archive/collection/?type=vulnerlab"
+SOURCE_FILE = "https://vulners.com/api/v3/archive/collection/?type=vulnerlab&api_key={}"
 
 # Imports
 import json
@@ -32,7 +32,9 @@ class VulnerLab(Source):
         self.name = SOURCE_NAME
         self.cves = defaultdict(list)
 
-        _file, r = conf.getFeedData(SOURCE_NAME, SOURCE_FILE)
+        source_file = SOURCE_FILE.format(conf.readSetting("vulners", "api_key", ""))
+
+        _file, r = conf.getFeedData(SOURCE_NAME, source_file)
         data = json.loads(str(_file.read(), 'utf-8'))
         for entry in data:
             lab = {}

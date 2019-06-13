@@ -10,7 +10,7 @@
 
 # Sources
 SOURCE_NAME = 'nessus'
-SOURCE_FILE = "https://vulners.com/api/v3/archive/collection/?type=nessus"
+SOURCE_FILE = "https://vulners.com/api/v3/archive/collection/?type=nessus&api_key={}"
 
 # Imports
 import json
@@ -31,8 +31,9 @@ class Nessus(Source):
     def __init__(self):
         self.name = SOURCE_NAME
         self.cves = defaultdict(list)
+        source_file = SOURCE_FILE.format(conf.readSetting("vulners", "api_key", ""))
 
-        _file, r = conf.getFeedData(SOURCE_NAME, SOURCE_FILE)
+        _file, r = conf.getFeedData(SOURCE_NAME, source_file)
         data = json.loads(str(_file.read(), 'utf-8'))
         for entry in data:
             nessus = {}
